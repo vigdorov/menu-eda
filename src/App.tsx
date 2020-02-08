@@ -1,26 +1,38 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import productsAPI from './api/productsAPI';
+import {Product} from './api/types';
 
-const App = () => {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface State {
+  products: Product[];
+}
+
+class App extends React.Component<{}, State> {
+  constructor(props: {}) {
+    super(props);
+
+    this.state = {
+      products: [],
+    };
+  }
+
+  componentDidMount() {
+    productsAPI.request().then(products => {
+      this.setState({products});
+    })
+  }
+  
+  public render() {
+    const {products} = this.state;
+    return (
+      <div>
+        <ul>
+          {products.map(product => (
+            <li key={product._id}>{product.name}</li>
+          ))}
+        </ul>
+      </div>
+    );
+  }
 }
 
 export default App;
